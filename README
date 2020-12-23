@@ -11,7 +11,7 @@ DESCRIPTION
 
 USAGE
     Open FastICA.ipynb Jupyter Notebook and change dataPath, saveDataPath
-    and nComponents variable before running the cell containing the code.
+    and nComponents variables before running the cell containing the code.
 
     python fastica.py [-h] --dataPath DATAPATH --saveDataPath SAVEDATAPATH
                   --nComponents NCOMPONENTS

@@ -1,7 +1,6 @@
 import argparse
 import os
 
-import matplotlib.pyplot as plt
 import numpy as np
 from scipy.io import wavfile
 
@@ -14,15 +13,6 @@ def loadData(dataPath, nsources=9, size=50000):
         fs, data[i,:] = wavfile.read(os.path.join(dataPath, 'mix') + str(i+1) + '.wav')
 
     return fs, data
-
-# Function to display the audio spectrum
-def displayData(X):
-    C = X.shape[0]
-
-    for i in range(C):
-        plt.subplot(C, 1, i + 1)
-        plt.plot(X[i,:])
-    plt.show()
 
 # Function to save the audio data separated by fastica
 def saveData(saveDataPath, fs, X):

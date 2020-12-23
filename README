@@ -10,8 +10,11 @@ DESCRIPTION
     Separate sounds coming from mixed sources using FastICA algorithm
 
 USAGE
-    Open in Jupyter Notebook and change dataPath and saveDataPath variable
-    before running the cell containing the code
+    Open FastICA.ipynb Jupyter Notebook and change dataPath, saveDataPath
+    and nComponents variable before running the cell containing the code.
+
+    python fastica.py [-h] --dataPath DATAPATH --saveDataPath SAVEDATAPATH
+                  --nComponents NCOMPONENTS
 
 CONTRIBUTORS
     Hussem Ben Belgacem

@@ -47,7 +47,7 @@ def oneUnit(X, wp):
     return term1 - term2
 
 # Deflationary orthogonalization
-def orthogonolize(W, wp, i):
+def orthogonalize(W, wp, i):
     return wp - ((wp @ W[:i,:].T) @ W[:i,:])
 
 # wp normalization
@@ -72,7 +72,7 @@ def fastICA(X, C):
         while(1):
             old_wp = wp
             wp = oneUnit(X, wp)
-            wp = orthogonolize(W, wp, i)
+            wp = orthogonalize(W, wp, i)
             wp = normalize(wp)
             
             if(diff(old_wp, wp) == 0):

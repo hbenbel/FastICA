@@ -36,7 +36,7 @@ def centerMatrix(X, N):
 # Whiten matrix X with eigenvalue decomposition
 def whitenMatrix(X):
     D, E = np.linalg.eigh(X @ X.T)
-    DE = E @ np.diag(1/np.sqrt(D + 1e-5)) @ E.T
+    DE = np.diag(1/np.sqrt(D + 1e-5)) @ E.T
     
     return DE @ X
 

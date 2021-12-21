@@ -63,8 +63,7 @@ def fastICA(X, C, max_iter):
     W = np.zeros((C, N))
     for i in range(C):
         wp = np.random.rand(1, N)
-        for j in range(max_iter):
-            old_wp = wp
+        for _ in range(max_iter):
             wp = oneUnit(X, wp)
             wp = orthogonalize(W, wp, i)
             wp = normalize(wp)

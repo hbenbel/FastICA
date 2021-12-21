@@ -54,12 +54,6 @@ def orthogonalize(W, wp, i):
 def normalize(wp):
     return wp / np.linalg.norm(wp)
 
-# Function to see if wp is still updating
-def diff(wp1, wp2):
-    norm1 = np.linalg.norm(wp1)
-    norm2 = np.linalg.norm(wp2)
-    return np.abs(norm1 - norm2)
-
 
 def fastICA(X, C, max_iter):
     N = X.shape[0]

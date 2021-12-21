@@ -34,9 +34,9 @@ def centerMatrix(X, N):
     return M
 
 # Whiten matrix X with eigenvalue decomposition
-def whitenMatrix(X):
+def whitenMatrix(X, eps):
     D, E = np.linalg.eigh(X @ X.T)
-    DE = np.diag(1/np.sqrt(D)) @ E.T
+    DE = np.diag(1/np.sqrt(D + eps)) @ E.T
     
     return DE @ X
 
@@ -61,10 +61,10 @@ def diff(wp1, wp2):
     return np.abs(norm1 - norm2)
 
 
-def fastICA(X, C):
+def fastICA(X, C, eps):
     N = X.shape[0]
     X = centerMatrix(X, N)
-    X = whitenMatrix(X)
+    X = whitenMatrix(X, eps)
     
     W = np.zeros((C, N))
     for i in range(C):
@@ -75,7 +75,7 @@ def fastICA(X, C):
             wp = orthogonalize(W, wp, i)
             wp = normalize(wp)
             
-            if(diff(old_wp, wp) == 0):
+            if(diff(old_wp, wp) <= eps or np.isnan(wp).all()):
                 W[i,:] = wp
                 break
 
@@ -87,15 +87,17 @@ if __name__ == "__main__":
     parser.add_argument('--dataPath', '-d', type=str, help='Path to the folder containing the input audio files', required=True)
     parser.add_argument('--saveDataPath', '-s', type=str, help='Path to folder that will contain the output audio files', required=True)
     parser.add_argument('--nComponents', '-n', type=int, help='Number of components that we want', required=True)
+    parser.add_argument('--epsilon', '-e', type=float, default=1e-15, required=False, help='Value for epsilon')
 
     args = parser.parse_args()
     dataPath = args.dataPath
     saveDataPath = args.saveDataPath
-    nComponents = args.nComponents
+    nComponents = args.nComponent
+    eps = args.epsilon
 
     if not os.path.exists(saveDataPath):
         os.makedirs(saveDataPath)
 
     fs, X = loadData(dataPath)
-    S = fastICA(X, nComponents)
+    S = fastICA(X, nComponents, eps)
     saveData(saveDataPath, fs, S)

@@ -10,7 +10,7 @@ def loadData(dataPath, nsources=9, size=50000):
     data = np.empty((nsources, size), np.float32)
 
     for i in range(nsources):
-        fs, data[i,:] = wavfile.read(os.path.join(dataPath, 'mix') + str(i+1) + '.wav')
+        fs, data[i,:] = wavfile.read(os.path.join(dataPath, 'mix') + str(i + 1)  + '.wav')
 
     return fs, data
 
@@ -34,9 +34,9 @@ def centerMatrix(X, N):
     return M
 
 # Whiten matrix X with eigenvalue decomposition
-def whitenMatrix(X, eps):
+def whitenMatrix(X):
     D, E = np.linalg.eigh(X @ X.T)
-    DE = np.diag(1/np.sqrt(D + eps)) @ E.T
+    DE = E @ np.diag(1/np.sqrt(D + 1e-5)) @ E.T
     
     return DE @ X
 
@@ -61,23 +61,20 @@ def diff(wp1, wp2):
     return np.abs(norm1 - norm2)
 
 
-def fastICA(X, C, eps):
+def fastICA(X, C, max_iter):
     N = X.shape[0]
     X = centerMatrix(X, N)
-    X = whitenMatrix(X, eps)
+    X = whitenMatrix(X)
     
     W = np.zeros((C, N))
     for i in range(C):
         wp = np.random.rand(1, N)
-        while(1):
+        for j in range(max_iter):
             old_wp = wp
             wp = oneUnit(X, wp)
             wp = orthogonalize(W, wp, i)
             wp = normalize(wp)
-            
-            if(diff(old_wp, wp) <= eps or np.isnan(wp).all()):
-                W[i,:] = wp
-                break
+            W[i,:] = wp
 
     return W @ X
 
@@ -87,17 +84,17 @@ if __name__ == "__main__":
     parser.add_argument('--dataPath', '-d', type=str, help='Path to the folder containing the input audio files', required=True)
     parser.add_argument('--saveDataPath', '-s', type=str, help='Path to folder that will contain the output audio files', required=True)
     parser.add_argument('--nComponents', '-n', type=int, help='Number of components that we want', required=True)
-    parser.add_argument('--epsilon', '-e', type=float, default=1e-15, required=False, help='Value for epsilon')
+    parser.add_argument('--max_iter', '-m', type=int, default=200, required=False, help='Number of iteration to get a component')
 
     args = parser.parse_args()
     dataPath = args.dataPath
     saveDataPath = args.saveDataPath
-    nComponents = args.nComponent
-    eps = args.epsilon
+    nComponents = args.nComponents
+    max_iter = args.max_iter
 
     if not os.path.exists(saveDataPath):
         os.makedirs(saveDataPath)
 
     fs, X = loadData(dataPath)
-    S = fastICA(X, nComponents, eps)
+    S = fastICA(X, nComponents, max_iter)
     saveData(saveDataPath, fs, S)

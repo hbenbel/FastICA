@@ -14,7 +14,7 @@ USAGE
     and nComponents variables before running the cell containing the code.
 
     python src/fastica.py [-h] --dataPath DATAPATH --saveDataPath SAVEDATAPATH
-                  --nComponents NCOMPONENTS --epsilon EPSILON
+                  --nComponents NCOMPONENTS --max_iter MAXITERATION
 
 CONTRIBUTORS
     Hussem Ben Belgacem
